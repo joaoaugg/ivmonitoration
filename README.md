@@ -1,4 +1,4 @@
-# AVANT Energy Monitor
+# AVANT x CADENCE Energy Monitor
 
 Sistema de monitoramento elétrico desenvolvido para a equipe **AVANT – UFMG**, utilizando ESP32, sensores INA228 e NVIDIA Jetson com ROS2.
 
