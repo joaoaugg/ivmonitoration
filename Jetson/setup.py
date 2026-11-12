@@ -20,7 +20,7 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='avant',
-    maintainer_email='avant@example.com',
+    maintainer_email='joaoaug10@gmail.com',
     description='Monitoramento INA228 ESP32-Jetson',
     license='Apache-2.0',
     tests_require=['pytest'],
