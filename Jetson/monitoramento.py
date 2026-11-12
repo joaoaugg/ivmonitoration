@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import math
@@ -21,9 +20,6 @@ class EnergyMonitor(Node):
     def __init__(self):
         super().__init__('avant_energy_monitor')
 
-        # ===================================
-        # PARAMETROS
-        # ===================================
 
         self.declare_parameter(
             'serial_port', '/dev/ttyTHS1'
@@ -47,10 +43,6 @@ class EnergyMonitor(Node):
             'timeout_conexao'
         ).value
 
-        # ===================================
-        # IDENTIFICACAO DOS SENSORES
-        # ===================================
-
         self.nomes = [
             'bateria',
             'esc1',
@@ -59,9 +51,7 @@ class EnergyMonitor(Node):
             'esc4'
         ]
 
-        # ===================================
-        # PUBLICADORES ROS2
-        # ===================================
+        # publishers
 
         self.publishers = {}
 
@@ -119,9 +109,6 @@ class EnergyMonitor(Node):
 
         self.abrir_uart()
 
-    # =======================================
-    # ABRIR COMUNICACAO UART
-    # =======================================
 
     def abrir_uart(self):
 
@@ -152,9 +139,7 @@ class EnergyMonitor(Node):
                 f'Erro ao abrir UART: {erro}'
             )
 
-    # =======================================
-    # PUBLICAR ESTADO DA CONEXAO
-    # =======================================
+    # conexao
 
     def atualizar_conexao(self, estado):
 
@@ -181,13 +166,11 @@ class EnergyMonitor(Node):
                 'ERROR,ESP32,FALHA_COMUNICACAO'
             )
 
-    # =======================================
-    # LER UART
-    # =======================================
+    # leitura jetson
 
     def ler_uart(self):
 
-        # Tentar reconectar caso a porta esteja fechada
+        #proteção
         if self.uart is None:
 
             if (
@@ -205,14 +188,12 @@ class EnergyMonitor(Node):
             if quantidade == 0:
                 return
 
-            # Leitura sem bloqueio
             recebido = self.uart.read(
                 min(quantidade, 1024)
             )
 
             self.buffer.extend(recebido)
 
-            # Protecao contra buffer excessivo
             if len(self.buffer) > 4096:
                 self.buffer.clear()
 
@@ -221,7 +202,6 @@ class EnergyMonitor(Node):
                 )
                 return
 
-            # Separar as mensagens por quebra de linha
             while b'\n' in self.buffer:
 
                 linha, _, restante = (
@@ -246,10 +226,6 @@ class EnergyMonitor(Node):
 
             self.fechar_uart()
             self.atualizar_conexao(False)
-
-    # =======================================
-    # PROCESSAR MENSAGENS
-    # =======================================
 
     def processar_mensagem(self, linha):
 
@@ -281,9 +257,8 @@ class EnergyMonitor(Node):
                     f'{partes[1]}: {partes[2]}'
                 )
 
-    # =======================================
-    # PROCESSAR 5 INA228
-    # =======================================
+
+
 
    
 def processar_dados(self, partes):
@@ -325,7 +300,7 @@ def processar_dados(self, partes):
         )
         return
 
-    # Publicar e imprimir medicoes
+    # publicar e imprimir medicoes
     for nome, medicao in zip(self.nomes, medicoes):
 
         tensao, corrente, valido = medicao
@@ -365,7 +340,6 @@ def processar_dados(self, partes):
 
         self.publishers[nome].publish(msg)
 
-    # Atualizar watchdog
     self.ultima_mensagem = time.monotonic()
     self.atualizar_conexao(True)
 
